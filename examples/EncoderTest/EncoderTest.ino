@@ -18,7 +18,7 @@ void isr ()  {                    // Interrupt service routine is executed when 
 void setup ()  {
  pinMode(PinCLK,INPUT);
  pinMode(PinDT,INPUT);  
- pinMode(PinSW,INPUT);
+ pinMode(PinSW,INPUT_PULLUP);
  attachInterrupt (0,isr,FALLING);   // interrupt 0 is always connected to pin 2 on Arduino UNO
  Serial.begin (9600);
  Serial.println("Start");
