@@ -9,7 +9,7 @@ GND|GND|GND
 +|5V
 DT|4
 CLK|2
-TX|RX
+.|TX|RX
 
 Functions:
 ============================
