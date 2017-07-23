@@ -1,18 +1,17 @@
 
 #include <Arduino.h>
 
-// -----------------------------------------------------------------------------
-// constants
-
 const int                                 PinCLK   = 2;     // Used for generating interrupts using CLK signal
 const int                                 PinDT    = 4;     // Used for reading DT signal
 const int                                 PinSW    = 8;     // Used for the push button switch
+const int                                 ModeVolume    = 0;     
+const int                                 ModeStation   = 1; 
+const int                                 ModeStop   = 2;     
 
-// -----------------------------------------------------------------------------
-// global vars
-
-volatile int   virtualPosition    = 0;
 static boolean rotating=false; 
+int mode;
+double time_press;
+boolean pressed;
 
 // -----------------------------------------------------------------------------
 // forward decls
@@ -40,31 +39,61 @@ void setup() {
     pinMode(PinCLK,INPUT);
     pinMode(PinDT, INPUT);
     pinMode(PinSW, INPUT_PULLUP);
+    mode = ModeVolume;
+    time_press = millis();
+    pressed = false;
+    attachInterrupt(digitalPinToInterrupt(PinCLK), isr, FALLING);   
 
-    attachInterrupt(digitalPinToInterrupt(PinCLK), isr, CHANGE);   // interrupt 0 is always connected to pin 2 on Arduino UNO
-
-    Serial.println("Start");
-
-    } // setup
+    } 
 
 // -----------------------------------------------------------------------------
 
 void loop() {
+long press_length;  
 
 
 while(rotating)
   {
     delay(2);  // debounce by waiting 2 milliseconds
-               // (Just one line of code for debouncing)
-    if (digitalRead(4) == digitalRead(2))  // CCW
-     Serial.print("cli.vol-\r");
-    else                          // If not CCW, then it is CW
-     Serial.print("cli.vol+\r");
+    
+    if (mode==ModeVolume)
+    {
+      if (digitalRead(PinDT) == digitalRead(PinCLK))  // CCW
+       Serial.print("cli.vol+\r");
+      else                          
+       Serial.print("cli.vol-\r");
+    }
+    
+    if (mode==ModeStation)
+    {
+      if (digitalRead(PinDT) == digitalRead(PinCLK))  // CCW
+       Serial.print("cli.next\r");
+      else                         
+       Serial.print("cli.prev\r");
+    }
      
     rotating=false; // Reset the flag
-    
   }
-  if (!digitalRead(PinSW)) virtualPosition=0;     
-            
-      
-  } //loop
+ 
+  
+  if (!digitalRead(PinSW)) 
+     {
+      pressed=true;
+      time_press = millis();
+      delay(50);
+     }
+     
+    if (digitalRead(PinSW) && pressed) 
+     {
+       pressed=false;
+       press_length= millis()-time_press;
+       Serial.println(press_length);
+       if (press_length >= 100) Serial.print("cli.stop\r");
+       else  
+        if (mode==ModeStation) 
+           mode=ModeVolume;
+        else
+           mode=ModeStation;      
+     }
+              
+ } //loop
