@@ -12,6 +12,7 @@ static boolean rotating=false;
 int mode;
 double time_press;
 boolean pressed;
+boolean stopped;
 
 // -----------------------------------------------------------------------------
 // forward decls
@@ -42,6 +43,7 @@ void setup() {
     mode = ModeVolume;
     time_press = millis();
     pressed = false;
+    stopped = false;
     attachInterrupt(digitalPinToInterrupt(PinCLK), isr, FALLING);   
 
     } 
@@ -78,22 +80,24 @@ while(rotating)
   
   if (!digitalRead(PinSW)) 
      {
+      if (!pressed) time_press = millis();
       pressed=true;
-      time_press = millis();
-      delay(50);
+      delay(2);
      }
      
     if (digitalRead(PinSW) && pressed) 
      {
+     
        pressed=false;
        press_length= millis()-time_press;
-       Serial.println(press_length);
-       if (press_length >= 100) Serial.print("cli.stop\r");
-       else  
-        if (mode==ModeStation) 
-           mode=ModeVolume;
-        else
-           mode=ModeStation;      
+       if (stopped) { Serial.print("cli.start\r"); stopped = false; }
+       else
+        if (press_length >= 1000) { Serial.print("cli.stop\r"); stopped = true;}
+         else  
+          if (mode==ModeStation) 
+             mode=ModeVolume;
+          else
+            mode=ModeStation;      
      }
               
  } //loop
