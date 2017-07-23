@@ -2,6 +2,7 @@ Simple SW for controlling KA radio only via rotary encoder
 ==========================================================
 
 Wiring:
+
 Rotary encoder |  Arduino | KA radio
 ------------ | -------------| -------------
 GND|GND|GND
