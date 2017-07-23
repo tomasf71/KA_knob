@@ -12,6 +12,7 @@ const int                                 PinSW    = 8;     // Used for the push
 // global vars
 
 volatile int                             virtualPosition    = 0;
+static boolean rotating=false; 
 
 // -----------------------------------------------------------------------------
 // forward decls
@@ -24,12 +25,13 @@ void setup();
 // Interrupt service routine is executed when a HIGH to LOW transition is detected on CLK
 
 void isr ()  {
-    if (!digitalRead(PinDT))
-        virtualPosition = virtualPosition + 1;
-    else
-        virtualPosition = virtualPosition - 1;
-    } // isr
 
+    static unsigned long                lastInterruptTime = 0;
+
+    unsigned long                       interruptTime = millis();
+
+    rotating=true;
+    } // ISR
 // -----------------------------------------------------------------------------
 
 void setup() {
@@ -39,7 +41,7 @@ void setup() {
     pinMode(PinDT, INPUT);
     pinMode(PinSW, INPUT_PULLUP);
 
-    attachInterrupt(digitalPinToInterrupt(PinCLK), isr, FALLING);   // interrupt 0 is always connected to pin 2 on Arduino UNO
+    attachInterrupt(digitalPinToInterrupt(PinCLK), isr, CHANGE);   // interrupt 0 is always connected to pin 2 on Arduino UNO
 
     Serial.println("Start");
 
@@ -49,19 +51,19 @@ void setup() {
 
 void loop() {
 
-    int                                    lastCount = 0;
 
-    while (true) {
-        if (!(digitalRead(PinSW))) {        // check if pushbutton is pressed
-            virtualPosition = 0;            // if YES, then reset counter to ZERO
-            while (!digitalRead(PinSW)) {}  // wait til switch is released
-            delay(10);                      // debounce
-            Serial.println("Reset");        // Using the word RESET instead of COUNT here to find out a buggy encoder
-            }
-        if (virtualPosition != lastCount) {
-            lastCount = virtualPosition;
-            Serial.print("Count");
-            Serial.println(virtualPosition);
-            }
-        } // while
-    } //loop
+while(rotating)
+  {
+    delay(2);  // debounce by waiting 2 milliseconds
+               // (Just one line of code for debouncing)
+    if (digitalRead(4) == digitalRead(2))  // CCW
+     virtualPosition--;
+    else                          // If not CCW, then it is CW
+     virtualPosition++;
+    rotating=false; // Reset the flag
+    Serial.println(virtualPosition);
+  }
+  if (!digitalRead(PinSW)) virtualPosition=0;     
+            
+      
+  } //loop
