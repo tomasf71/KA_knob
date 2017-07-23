@@ -14,5 +14,7 @@ TX|RX
 Functions:
 ============================
 Rotating knob : change volume / station (it depends on mode)
+
 Short knob press: change mode: volume <-> station
+
 Long presentation of knob (>1s) : stop/play  
