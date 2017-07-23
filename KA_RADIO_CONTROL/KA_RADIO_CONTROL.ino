@@ -6,7 +6,7 @@ const int                                 PinDT    = 4;     // Used for reading 
 const int                                 PinSW    = 8;     // Used for the push button switch
 const int                                 ModeVolume    = 0;     
 const int                                 ModeStation   = 1; 
-const int                                 ModeStop   = 2;     
+   
 
 static boolean rotating=false; 
 int mode;
