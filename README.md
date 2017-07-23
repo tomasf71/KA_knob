@@ -1,15 +1,15 @@
 Simple SW for controlling KA radio only via rotary encoder
 ==========================================================
 
-Wiring: 
+Wiring:
 
 Rotary encoder   —  arduino - KA RAdio
 ===========================
 GND ——— GND —————— GND
-+   ——— 5V  
+"+" ——— 5V  
 DT  ——— 4
 CLK ——— 2
-	TX  —————— RX
+				TX  —————— RX
 
 Function:
 ============================
