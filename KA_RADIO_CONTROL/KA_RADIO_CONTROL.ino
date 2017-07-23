@@ -35,7 +35,7 @@ void isr ()  {
 // -----------------------------------------------------------------------------
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     pinMode(PinCLK,INPUT);
     pinMode(PinDT, INPUT);
@@ -57,7 +57,7 @@ while(rotating)
     delay(2);  // debounce by waiting 2 milliseconds
                // (Just one line of code for debouncing)
     if (digitalRead(4) == digitalRead(2))  // CCW
-     Serial.print("cli.vol-\r")
+     Serial.print("cli.vol-\r");
     else                          // If not CCW, then it is CW
      Serial.print("cli.vol+\r");
      
