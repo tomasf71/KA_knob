@@ -4,6 +4,7 @@
 const int                                 PinCLK   = 2;     // Used for generating interrupts using CLK signal
 const int                                 PinDT    = 4;     // Used for reading DT signal
 const int                                 PinSW    = 8;     // Used for the push button switch
+const int                                 PinLED   = 13;     // Used fome Mode signalization 
 const int                                 ModeVolume    = 0;     
 const int                                 ModeStation   = 1; 
 const int                                 ModeStop   = 2;     
@@ -43,6 +44,7 @@ void setup() {
     pinMode(PinCLK,INPUT);
     pinMode(PinDT, INPUT);
     pinMode(PinSW, INPUT_PULLUP);
+    pinMode(PinLED, OUTPUT);
     mode = ModeVolume;
     time_press = millis();
     time_cli_station = millis();
@@ -56,7 +58,8 @@ void setup() {
 
 void loop() {
 long press_length; 
-long last_cli_time; 
+long last_cli_time;
+
 
 
 while(rotating)
@@ -108,12 +111,27 @@ while(rotating)
        press_length= millis()-time_press;
        if (stopped) { Serial.print("cli.start\r"); stopped = false; }
        else
-        if (press_length >= 300) { Serial.print("cli.stop\r"); stopped = true;}
+        if (press_length >= 300) { Serial.print("cli.stop\r"); stopped = true; mode==ModeStop;}
          else  
-          if (mode==ModeStation) 
-             mode=ModeVolume;
+          if (mode==ModeVolume) 
+             mode=ModeStation;
           else
-            mode=ModeStation;      
+            mode=ModeVolume;      
      }
+
+     // change status LED
+     
+     if (stopped)  // LED blink 2 sec 
+      if (millis() & 2048) digitalWrite(PinLED,0);
+       else digitalWrite(PinLED,1);
+     else
+      {
+      if (mode==ModeStation)    // LED blink 0.5sec
+       if (millis() & 256) digitalWrite(PinLED,1);
+       else digitalWrite(PinLED,0);
+     
+       if (mode==ModeVolume) digitalWrite(PinLED,1); // LED on
+      }
+
               
  } //loop
