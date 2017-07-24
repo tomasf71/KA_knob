@@ -7,7 +7,7 @@ const int                                 PinSW    = 8;     // Used for the push
 const int                                 PinLED   = 13;     // Used fome Mode signalization 
 const int                                 ModeVolume    = 0;     
 const int                                 ModeStation   = 1; 
-const int                                 ModeStop   = 2;     
+   
 
 static boolean rotating=false; 
 int mode;
