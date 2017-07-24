@@ -11,6 +11,9 @@ const int                                 ModeStop   = 2;
 static boolean rotating=false; 
 int mode;
 double time_press;
+double time_cli_station;
+
+
 boolean pressed;
 boolean stopped;
 
@@ -42,6 +45,7 @@ void setup() {
     pinMode(PinSW, INPUT_PULLUP);
     mode = ModeVolume;
     time_press = millis();
+    time_cli_station = millis();
     pressed = false;
     stopped = false;
     attachInterrupt(digitalPinToInterrupt(PinCLK), isr, FALLING);   
@@ -51,7 +55,8 @@ void setup() {
 // -----------------------------------------------------------------------------
 
 void loop() {
-long press_length;  
+long press_length; 
+long last_cli_time; 
 
 
 while(rotating)
@@ -68,10 +73,21 @@ while(rotating)
     
     if (mode==ModeStation)
     {
+      last_cli_time =  millis() - time_cli_station; 
+     
       if (digitalRead(PinDT) == digitalRead(PinCLK))  // CCW
-       Serial.print("cli.next\r");
-      else                         
-       Serial.print("cli.prev\r");
+       if (last_cli_time>=300) 
+        { 
+          Serial.print("cli.next\r"); 
+          time_cli_station = millis();
+        }
+                      
+      if (digitalRead(PinDT) != digitalRead(PinCLK))  // CCW                            
+       if (last_cli_time>=300) 
+        {
+         Serial.print("cli.prev\r"); 
+         time_cli_station = millis();
+        }
     }
      
     rotating=false; // Reset the flag
