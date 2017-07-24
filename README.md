@@ -22,4 +22,4 @@ Long press of knob (>300ms) : stop/play
 
 Delay between station change 300ms
 
-Added LED indication
+Added LED indication: LEN on = mode volume, LED blinking 0.5s = mode station, LED blinking 2s = STOP
