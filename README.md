@@ -19,3 +19,5 @@ Rotating knob : change volume / station (it depends on mode)
 Short knob press: change mode: volume <-> station
 
 Long press of knob (>300ms) : stop/play  
+
+Added LED indication
