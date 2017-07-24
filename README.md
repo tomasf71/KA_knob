@@ -1,4 +1,4 @@
-Simple SW for controlling KA radio only via rotary encoder
+Simple SW for controlling KA radio (https://github.com/karawin/Ka-Radio) only via rotary encoder
 ==========================================================
 
 Wiring:
