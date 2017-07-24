@@ -111,7 +111,7 @@ while(rotating)
        press_length= millis()-time_press;
        if (stopped) { Serial.print("cli.start\r"); stopped = false; }
        else
-        if (press_length >= 300) { Serial.print("cli.stop\r"); stopped = true; mode==ModeStop;}
+        if (press_length >= 300) { Serial.print("cli.stop\r"); stopped = true;}
          else  
           if (mode==ModeVolume) 
              mode=ModeStation;
